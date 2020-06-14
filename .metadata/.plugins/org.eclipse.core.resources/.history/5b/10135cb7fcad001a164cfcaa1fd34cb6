@@ -1,0 +1,5 @@
+package com.vikas.projects.oauth.client.controllers;
+
+public class ClientController {
+
+}
