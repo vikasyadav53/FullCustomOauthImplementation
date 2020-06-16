@@ -46,14 +46,14 @@ body {
 				<code th:text="${client_id}"></code>
 			</p>
 
-			<form class="form" action="/approve" method="POST">
+			<form class="form" action="#" th:action="@{/approve}" method="POST" th:object="${user}">
 				<input type="hidden" name="reqid" th:attr="value=#{reqid}">
 				<div th:if="${scope}">
 					<p>The client is requesting access to the following:</p>
 					<ul th:each="scope_id: ${scope}">
-						<li><input type="checkbox" th:attr="name='scope_'#{scope_id}"
-							th:attr="id='scope_'#{scope_id}" checked="checked"> <label
-							th:attr="for='scope_'#{scope_id}" th:text="${scope_id}"></label></li>
+						<li><input type="checkbox" data-th-attr="name=${scope_id}, id=${scope_id}"
+							checked="checked"> <label
+							th:attr="for=${scope_id}" th:text="${scope_id}"></label></li>
 
 					</ul>
 				</div>

@@ -43,6 +43,7 @@ public class ClientController {
 	private String tokenEndpointURL;
 	
 	private String code;
+	private String approvedScopes;
 
 	@GetMapping("/")
 	public String indexRenderer(Model model) {
@@ -64,9 +65,10 @@ public class ClientController {
 		requestParams.put("client_id", client_id);
 		requestParams.put("redirect_uri", redirect_uri[0]);
 		requestParams.put("state", state);
+		requestParams.put("scope", "foo");
 
 		String builder = requestParams.keySet().stream().map(key -> key + "=" + encodeValue(requestParams.get(key)))
-				.collect(Collectors.joining("&", "http://localhost:9001/authorize?", ""));
+				.collect(Collectors.joining("&", "http://localhost:8082/authorize?", ""));
 		return "redirect:" + builder;
 	}
 
@@ -114,11 +116,16 @@ public class ClientController {
 			access_token = body.getString("access_token");
 			
 			System.out.println("Printing access token value: "+ access_token);
+			if(body.get("scopes") != null) {
+				approvedScopes = body.getString("scopes");
+			}
+			model.addAttribute("access_token", access_token);
+			model.addAttribute("scopes", approvedScopes);
+			return "index";
+		} else {
+			model.addAttribute("error", "Unable to fetch response");
+			return "error";
 		}
-		
-		
-		
-		return null;
 	}
 	
 	private String customEncoder(String source) {
