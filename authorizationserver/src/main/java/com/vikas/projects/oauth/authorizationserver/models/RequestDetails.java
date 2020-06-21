@@ -1,5 +1,7 @@
 package com.vikas.projects.oauth.authorizationserver.models;
 
+import java.util.Arrays;
+
 import org.springframework.stereotype.Component;
 
 @Component
@@ -14,6 +16,16 @@ public class RequestDetails {
 	private String[] approvedScopes;
 	private String code;
 	private String grantType;
+	private String userId;
+	private int hashValue;
+	private String accessToken;
+	
+	public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 	public String getReqid() {
 		return reqid;
 	}
@@ -68,6 +80,29 @@ public class RequestDetails {
 	public void setGrantType(String grantType) {
 		this.grantType = grantType;
 	}
+	
+	public int getHashValue() {
+		return hashValue;
+	}
+	public void setHashValue(int hashValue) {
+		this.hashValue = hashValue;
+	}
+	
+	public String getAccessToken() {
+		return accessToken;
+	}
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
+	}
+	@Override
+	public String toString() {
+		return "RequestDetails [reqid=" + reqid + ", clientId=" + clientId + ", clientSecret=" + clientSecret
+				+ ", redirectUris=" + Arrays.toString(redirectUris) + ", state=" + state + ", assignedScopes="
+				+ Arrays.toString(assignedScopes) + ", approvedScopes=" + Arrays.toString(approvedScopes) + ", code="
+				+ code + ", grantType=" + grantType + ", userId=" + userId + "]";
+	}
+	
+	
 	
 	
 

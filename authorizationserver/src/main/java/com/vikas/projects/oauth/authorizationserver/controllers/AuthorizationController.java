@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.vikas.projects.oauth.authorizationserver.models.RequestDetails;
 import com.vikas.projects.oauth.authorizationserver.models.UserFormDataModel;
+import com.vikas.projects.oauth.authorizationserver.models.UserLoginModel;
+import com.vikas.projects.oauth.authorizationserver.service.AuthorizationService;
 
 @Controller
 public class AuthorizationController {
@@ -50,9 +52,13 @@ public class AuthorizationController {
 	private String requestedRedirectUri;
 	private String state;
 	private String accessToken;
+	private String[] rscope;
 
 	@Autowired
 	private RequestDetails requestDetails;
+	
+	@Autowired
+	private AuthorizationService service;
 
 	@GetMapping("/")
 	public String defaultRenderer(Model model) {
@@ -80,7 +86,7 @@ public class AuthorizationController {
 			return "error";
 		}
 		this.requestedRedirectUri = redirectUri;
-		String[] rscope = scope != null ? req_scope.split(", ") : null;
+		rscope = scope != null ? req_scope.split(", ") : null;
 		String[] cscope = scope != null ? scope.split(", ") : null;
 		if (!validateScopes(rscope, cscope)) {
 			Map<String, String> requestParams = new HashMap<>();
@@ -95,14 +101,29 @@ public class AuthorizationController {
 
 		this.responseType = responseType;
 
-		this.state = state;
-
+		this.state = state;		
+		return "login";
+	}
+	
+	@PostMapping("/login")
+	public String loginValidation(@ModelAttribute("userlogindetails") UserLoginModel userLogin, Model model) {
+		if(userLogin.getUserid() == null || userLogin.getPassword() == null) {
+			model.addAttribute("error", "Invalid user details");
+			return "error";
+		}
+		String status  = service.validateUser(userLogin);
+		if(status == null ) {
+			model.addAttribute("error", "User not found");
+			return "error";
+		}
+		requestDetails.setUserId(status);
 		model.addAttribute("client_id", client_id);
 		model.addAttribute("client_secret", client_secret);
 		model.addAttribute("reqid", reqid);
 		model.addAttribute("scope", rscope);
 		return "approve";
 	}
+	
 
 	@PostMapping("/approve")
 	public String approveGenerator(@ModelAttribute("user") UserFormDataModel userData, Model model) {
@@ -180,8 +201,9 @@ public class AuthorizationController {
 			if(savedCode.equals(reqCode)) {
 				accessToken = getRandomString();
 				String approvedScopesList = String.join(", ", requestDetails.getApprovedScopes());
-				
-				//Save access_token, along with requestDetails in database
+				requestDetails.setAccessToken(accessToken);
+				//Save requestDetails in database
+				service.savedRequestDetails(requestDetails);
 				JSONObject jsonObject= new JSONObject();
 				jsonObject.put("access_token", accessToken);
 				jsonObject.put("scopes", approvedScopesList);

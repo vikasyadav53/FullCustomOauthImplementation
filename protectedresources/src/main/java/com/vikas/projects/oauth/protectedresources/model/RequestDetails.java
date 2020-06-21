@@ -1,39 +1,31 @@
 package com.vikas.projects.oauth.protectedresources.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import java.util.Arrays;
 
-@Entity
-@Table(name="custom_oauth_client_details")
-public class RequestDetails {	
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long id;
+import org.springframework.stereotype.Component;
+
+@Component
+public class RequestDetails {
 	
-	@Column(name="req_id")
-	private String reqid;	
-	@Column(name="client_id")
-	private String clientId;	
-	@Column(name="client_secret")
-	private String clientSecret;	
-	@Column(name="redirect_uris")
-	private String redirectUris; // comma seperated redirected uris
-	@Column(name="state")
+	private String reqid;
+	private String clientId;
+	private String clientSecret;
+	private String[] redirectUris;
 	private String state;
-	@Column(name="assigned_scopes")
-	private String assignedScopes; // comma seperated assigned scopes
-	@Column(name="approved_scopes")
-	private String approvedScopes; // comma seperated approved scopes 
-	@Column(name="code")
+	private String[] assignedScopes;
+	private String[] approvedScopes;
 	private String code;
-	@Column(name="grant_type")
 	private String grantType;
-		
+	private String userId;
+	private int hashValue;
+	private String accessToken;
 	
+	public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 	public String getReqid() {
 		return reqid;
 	}
@@ -52,11 +44,29 @@ public class RequestDetails {
 	public void setClientSecret(String clientSecret) {
 		this.clientSecret = clientSecret;
 	}
+	public String[] getRedirectUris() {
+		return redirectUris;
+	}
+	public void setRedirectUris(String[] redirectUris) {
+		this.redirectUris = redirectUris;
+	}
 	public String getState() {
 		return state;
 	}
 	public void setState(String state) {
 		this.state = state;
+	}
+	public String[] getAssignedScopes() {
+		return assignedScopes;
+	}
+	public void setAssignedScopes(String[] assignedScopes) {
+		this.assignedScopes = assignedScopes;
+	}
+	public String[] getApprovedScopes() {
+		return approvedScopes;
+	}
+	public void setApprovedScopes(String[] approvedScopes) {
+		this.approvedScopes = approvedScopes;
 	}
 	public String getCode() {
 		return code;
@@ -70,29 +80,30 @@ public class RequestDetails {
 	public void setGrantType(String grantType) {
 		this.grantType = grantType;
 	}
-	public String getRedirectUris() {
-		return redirectUris;
+	
+	public int getHashValue() {
+		return hashValue;
 	}
-	public void setRedirectUris(String redirectUris) {
-		this.redirectUris = redirectUris;
+	public void setHashValue(int hashValue) {
+		this.hashValue = hashValue;
 	}
-	public String getAssignedScopes() {
-		return assignedScopes;
+	
+	public String getAccessToken() {
+		return accessToken;
 	}
-	public void setAssignedScopes(String assignedScopes) {
-		this.assignedScopes = assignedScopes;
-	}
-	public String getApprovedScopes() {
-		return approvedScopes;
-	}
-	public void setApprovedScopes(String approvedScopes) {
-		this.approvedScopes = approvedScopes;
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
 	}
 	@Override
 	public String toString() {
-		return "RequestDetails [id=" + id + ", reqid=" + reqid + ", clientId=" + clientId + ", clientSecret="
-				+ clientSecret + ", redirectUris=" + redirectUris + ", state=" + state + ", assignedScopes="
-				+ assignedScopes + ", approvedScopes=" + approvedScopes + ", code=" + code + ", grantType=" + grantType
-				+ "]";
+		return "RequestDetails [reqid=" + reqid + ", clientId=" + clientId + ", clientSecret=" + clientSecret
+				+ ", redirectUris=" + Arrays.toString(redirectUris) + ", state=" + state + ", assignedScopes="
+				+ Arrays.toString(assignedScopes) + ", approvedScopes=" + Arrays.toString(approvedScopes) + ", code="
+				+ code + ", grantType=" + grantType + ", userId=" + userId + "]";
 	}
+	
+	
+	
+	
+
 }
